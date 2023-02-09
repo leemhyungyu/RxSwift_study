@@ -27,6 +27,9 @@ import RxSwift
 /*:
  # Infallible
  */
+// Observable은 3가지 이벤트 방출 1. Next 2. Error 3. Completed
+
+// Infallible은 새로운 형태의 Observable이고 이벤트(Next, Completed) 방출, Error는 방출하지 않음
 
 enum MyError: Error {
     case unknown
@@ -39,6 +42,16 @@ let observable = Observable<String>.create { observer in
     //observer.onError(MyError.unknown)
     
     observer.onCompleted()
+    
+    return Disposables.create()
+}
+
+
+let infallible = Infallible<String>.create { observer in
+    
+//    observer.onNext("Hello")
+    observer(.next("Hello"))
+    observer(.completed)
     
     return Disposables.create()
 }
