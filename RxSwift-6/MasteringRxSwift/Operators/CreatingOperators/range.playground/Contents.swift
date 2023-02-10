@@ -27,10 +27,14 @@ import RxSwift
 /*:
  # range
  */
+// range: 정수를 지정된 수만큼 방출하는 Observable을 생성
 
 let disposeBag = DisposeBag()
 
-
+// 1씩 증가하는 정수를 Next이벤트로 전달한다음 Completed 이벤트 전달
+Observable.range(start: 1, count: 10)
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
 
 

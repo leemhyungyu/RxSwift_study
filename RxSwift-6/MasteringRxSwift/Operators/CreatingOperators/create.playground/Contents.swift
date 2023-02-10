@@ -27,6 +27,7 @@ import RxSwift
 /*:
  # create
  */
+// create: Observable이 동작하는 방식을 직접 구현하고 싶을 때 사용
 
 let disposeBag = DisposeBag()
 
@@ -34,6 +35,30 @@ enum MyError: Error {
    case error
 }
 
+Observable<String>.create { (observer) -> Disposable in
+    guard let url = URL(string: "https://www.apple.com") else {
+        observer.onError(MyError.error) // Error 이벤트 전달
+        return Disposables.create() // Disposables.create()해야 Disposable 리턴됨
+    }
+    
+    guard let html = try? String(contentsOf: url, encoding: .utf8) else {
+        observer.onError(MyError.error)
+        return Disposables.create()
+    }
+    
+    observer.onNext(html) // 문자열을 onNext 이벤트로 전달
+    observer.onCompleted()
+    observer.onNext("After completed")
+    return Disposables.create()
+}
+.subscribe { print($0) }
+.disposed(by: disposeBag)
 
+
+// create 연산자로 Observabel 직접 구현할 때의 기본 규칙
+// 요소를 방출할떄는 -> onNext()를 사용, 파라미터로 방출할 요소 전달
+// 반드시 onNext를 호출해야하는 것은 아님
+// Observable을 종료하기 위해서는 onError(), onCompleted()중 하나는 반드시 구현
+//
 
 

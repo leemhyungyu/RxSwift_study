@@ -27,8 +27,13 @@ import RxSwift
 /*:
  # repeatElement
  */
+// repeatElement: 동일한 요소를 반복적(무한정)으로 방출하는 Observable 생성 -> 방출되는 요소의 수를 제한하는것이 중요
 
 let disposeBag = DisposeBag()
 let element = "❤️"
 
+Observable.repeatElement(element)
+    .take(7) // 7개만 방출
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 

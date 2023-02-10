@@ -27,7 +27,13 @@ import RxSwift
 /*:
  # empty
  */
+// empty: Completed 이벤트를 전달하는(요소를 방출하지 않음) Observable 생성, Next 이벤트 전달 X
 
 let disposeBag = DisposeBag()
 
+// completed이벤트만 전달되고 종료
+// Observer가 아무런 동작없이 종료해야할 때 활용
+Observable<Void>.empty()
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 

@@ -28,8 +28,17 @@ import RxSwift
  # just
  */
 
+// just: 하나의 항목을 방출하는 Observable을 생성
+
 let disposeBag = DisposeBag()
 let element = "😀"
 
+// next 이벤트가 전달된 이후에 completed이벤트 전달됨
+Observable.just(element)
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
-
+// 배열이 그대로 방출됨 -> from 연산자와 혼동 주의
+Observable.just([1, 2, 3])
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)

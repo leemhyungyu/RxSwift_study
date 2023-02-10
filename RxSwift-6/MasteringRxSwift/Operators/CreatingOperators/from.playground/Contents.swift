@@ -27,9 +27,14 @@ import RxSwift
 /*:
  # from
  */
+// from: 배열의 요소를 방출하는 Observable을 생성
 
 let disposeBag = DisposeBag()
 let fruits = ["🍏", "🍎", "🍋", "🍓", "🍇"]
+
+Observable.from(fruits)
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
 
 
