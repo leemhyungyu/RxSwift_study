@@ -33,15 +33,6 @@ import RxSwift
 // Subject: 다른 Observable로 부터 이벤트를 받아서 observer로 전달, Observable인 동시에 Observer임
 
 // PublishSubject: Subject로 전달되는 새로운 이벤트를 구독자(Observer)로 전달
-// BehavirSubject: 생성 시점에 시작 이벤트를 지정, Subject로 전달되는 이벤트 중에서 가장 마지막에 전달되는 최신 이벤트를 저장했다가 새로운 구독자에게 최신 이벤트 전달
-// ReplaySubject: 하나 이상의 최신 이벤트를 버퍼에 저장, Observer가 구독을 시작하면 버퍼에 있는 모든 이벤트 전달
-// AsyncSubject: Subject로 Completed 이벤트가 전달되는 시점에 마지막으로 전달된 Next 이벤트를 구독자로 전달
-
-// :- RxSwift는 Subject를 래핑하고 있는 두가지 Relay 제공
-// :- Relay는 일반적인 Subject와 달리 Next이벤트만 받고 나머지 COmpleted와 Error이벤트 받지 않음. 주로 종료없이 계속 전달되는 이벤트 시퀀스를 처리할 때 사용
-// PublishRelay: PublishSubject를 래핑한 것
-// BehaviorRelay: BehaviorSubject를 래핑한 것
-
 
 let disposeBag = DisposeBag()
 
