@@ -27,7 +27,10 @@ import RxSwift
 /*:
  # concatMap
  */
-
+// concatMap: Interleaving없이 항상 방출 순서 보장
+// -> innerObservable을 생성된 순서대로 연결
+// -> 앞에 innerObservable이 이벤트 방출을 끝내면 이어지는 innerObservable에서 이벤트 방출 시작
+// -> 원본 Observable이 방출하는 이벤트 순서와 innerObservable이 방출하는 이벤트 순서가 동일함을 보장
 let disposeBag = DisposeBag()
 
 let redCircle = "🔴"
@@ -39,7 +42,7 @@ let greenHeart = "💚"
 let blueHeart = "💙"
 
 Observable.from([redCircle, greenCircle, blueCircle])
-    .flatMap { circle -> Observable<String> in
+    .concatMap { circle -> Observable<String> in
         switch circle {
         case redCircle:
             return Observable.repeatElement(redHeart)
@@ -58,9 +61,24 @@ Observable.from([redCircle, greenCircle, blueCircle])
     .disposed(by: disposeBag)
 
 
-
-
-
+/*
+ next(❤️)
+ next(❤️)
+ next(❤️)
+ next(❤️)
+ next(❤️)
+ next(💚)
+ next(💚)
+ next(💚)
+ next(💚)
+ next(💚)
+ next(💙)
+ next(💙)
+ next(💙)
+ next(💙)
+ next(💙)
+ completed
+ */
 
 
 

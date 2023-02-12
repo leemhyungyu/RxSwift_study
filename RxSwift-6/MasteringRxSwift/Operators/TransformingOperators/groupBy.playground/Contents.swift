@@ -27,15 +27,55 @@ import RxSwift
 /*:
  # groupBy
  */
+// groupBy: Observable이 방출하는 요소를 원하는 기준으로 GroupedObservable 만듬
 
 let disposeBag = DisposeBag()
 let words = ["Apple", "Banana", "Orange", "Book", "City", "Axe"]
 
+Observable.from(words)
+    .groupBy { $0.count } // 해당 값을 key로 갖는 그룹 만듬
+    .subscribe(onNext: { groupedObservable in
+        print("== \(groupedObservable.key)")
+        
+        groupedObservable.subscribe { print("  \($0)") }
+    })
+    .disposed(by: disposeBag)
 
+/*
+ == 5
+   next(Apple)
+ == 6
+   next(Banana)
+   next(Orange)
+ == 4
+   next(Book)
+   next(City)
+ == 3
+   next(Axe)
+   completed
+   completed
+   completed
+   completed
+ */
 
+Observable.from(words)
+    .groupBy { $0.count } // 해당 값을 key로 갖는 그룹 만듬
+    .flatMap { $0.toArray() }
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
+/*
+ next(["Apple"])
+ next(["Axe"])
+ next(["Book", "City"])
+ next(["Banana", "Orange"])
+ completed
+ */
 
-
-
+Observable.range(start: 1, count: 10)
+    .groupBy { $0.isMultiple(of: 2) }
+    .flatMap { $0.toArray() }
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
 

@@ -28,9 +28,22 @@ import RxSwift
  # map
  */
 
+// map: Observable이 배출하는 요소를 대상으로 클로저를 실행하고 실행 결과를 방출
+
 let disposeBag = DisposeBag()
 let skills = ["Swift", "SwiftUI", "RxSwift"]
 
+Observable.from(skills)
+    .map { "Hello, \($0)" }
+//    .map { $0.count } // 파라미터와 동일한 형식이 아니여도 됨
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
+/*
+ next(Hello, Swift)
+ next(Hello, SwiftUI)
+ next(Hello, RxSwift)
+ completed
+ */
 
 

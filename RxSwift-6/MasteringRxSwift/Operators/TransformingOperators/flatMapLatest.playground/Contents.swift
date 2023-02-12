@@ -42,7 +42,7 @@ let sourceObservable = PublishSubject<String>()
 let trigger = PublishSubject<Void>()
 
 sourceObservable
-    .flatMap { circle -> Observable<String> in
+    .flatMapLatest { circle -> Observable<String> in
         switch circle {
         case redCircle:
             return Observable<Int>.interval(.milliseconds(200), scheduler: MainScheduler.instance)

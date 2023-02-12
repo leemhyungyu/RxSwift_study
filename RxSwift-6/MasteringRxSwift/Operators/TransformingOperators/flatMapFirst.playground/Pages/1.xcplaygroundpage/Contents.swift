@@ -38,8 +38,9 @@ let redHeart = "❤️"
 let greenHeart = "💚"
 let blueHeart = "💙"
 
+// innerObservable에서 가장 먼저 방출하는 이벤트만 방출하고 나머지 InnerObservable은 무시.
 Observable.from([redCircle, greenCircle, blueCircle])
-    .flatMap { circle -> Observable<String> in
+    .flatMapFirst { circle -> Observable<String> in
         switch circle {
         case redCircle:
             return Observable.repeatElement(redHeart)
