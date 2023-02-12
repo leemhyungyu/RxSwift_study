@@ -27,11 +27,31 @@ import RxSwift
 /*:
  # takeLast
  */
-
+// takeLast: 정수를 파라미터로 받아서 Observable을 리턴, 리턴되는 Observable은 원본 Observable이 방출하는 Next이벤트 중에서 마지막에 방출한 Next 이벤트만 입력받은 정수만큼 방출, 구독자로 전달되는 시점이 지연됨
 let disposeBag = DisposeBag()
 
+let subject = PublishSubject<Int>()
 
+subject.takeLast(2)
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
+// takeLast는 마지막에 방출한 9와 10을 버퍼에 가지고 있음
+(1...10).forEach { subject.onNext($0) }
+
+// 버퍼에 가지고 있는 값을 10과 11로 업데이트
+subject.onNext(11)
+
+// onCompleted이벤트를 전달하면 버퍼에 저장하고 있던 Next이벤트를 구독자로 방출하고 completed이벤트 방출
+
+subject.onCompleted()
+
+enum MyError: Error {
+    case error
+}
+
+// error이벤트를 전달하면 버퍼에 저장하고 있던 이벤트를 버리고 error이벤트만 방출
+subject.onError(MyError.error)
 
 
 

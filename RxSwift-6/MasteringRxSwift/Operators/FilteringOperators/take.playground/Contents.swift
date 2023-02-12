@@ -27,8 +27,22 @@ import RxSwift
 /*:
  # take
  */
+// take: 정수를 파라미터로 받아 해당 숫자만큼만 이벤트 방출
 
 let disposeBag = DisposeBag()
 let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
+Observable.from(numbers)
+    .take(5) // 5개만 방출하고 나머지는 무시
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
+/*
+ - 출력 -
+ next(1)
+ next(2)
+ next(3)
+ next(4)
+ next(5)
+ completed
+ */

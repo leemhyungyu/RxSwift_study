@@ -27,17 +27,33 @@ import RxSwift
 /*:
  # skip(duration:scheduler:)
  */
-
+// skip(duration:scheduler:):
+// duration: 해당 시간동안 Observable이 방출하는 모든 이벤트 무시
 
 let disposeBag = DisposeBag()
 
 let o = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
 
 o.take(10)
+    .skip(.seconds(3), scheduler: MainScheduler.instance)
     .subscribe { print($0) }
     .disposed(by: disposeBag)
 
-
+/*
+ - 출력 -
+ 
+ 시간의 오차때문에 2부터 전달됨
+ 시간을 파라미터로 받을 떄는 항상 오차가 있다는 것을 감안해야함.
+ next(2)
+ next(3)
+ next(4)
+ next(5)
+ next(6)
+ next(7)
+ next(8)
+ next(9)
+ completed
+ */
 
 
 

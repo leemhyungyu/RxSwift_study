@@ -52,10 +52,28 @@ let buttonTap = Observable<String>.create { observer in
    }
 }
 
-buttonTap    
-   .subscribe { print($0) }
-   .disposed(by: disposeBag)
+// 원본 Observable에서 방출되는 Next가 1초마다 구독자에게 전달
+buttonTap
+    .throttle(.milliseconds(1000), scheduler: MainScheduler.instance)
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
+/*
+ next(Tap 1)
+ next(Tap 4)
+ next(Tap 7)
+ next(Tap 10)
+ next(Tap 11)
+ next(Tap 12)
+ next(Tap 14)
+ next(Tap 16)
+ next(Tap 18)
+ next(Tap 20)
+ completed
+ */
 
-
+// throttle: Next이벤트를 지정된 주기마다 하나씩 구독자에게 전달
+// debounce: Next이벤트를 전달한 다음 지정된 시간이 경과하기까지 다른 이벤트가 전달되지 않는다면 마지막으로 방출된 이벤트를 구독자에게 전달
+// -> 주로 검색 기능 구현시 활용, 키워드를 입력시 네트워크 요청 전달과 같이..
+// -> 사용자가 짧은 시간동안 연속해서 입력할때는 작업이 실행되지 않다가 지정된 시간동안 입력되지 않으면 검색 시작. 불필요한 리소스 낭비하지않고 실시간 검색 기능 구현 가능
 //: [Next](@next)

@@ -42,17 +42,35 @@ func currentTimeString() -> String {
 }
 
 
+// 1초마다 정수를 방출하는 Observable에서 2.5주기를 가진 throttle연산자 사용
 Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
    .debug()
    .take(10)
-   .throttle(.milliseconds(2500), latest: true, scheduler: MainScheduler.instance)
+   .throttle(.milliseconds(2500), latest: true, scheduler: MainScheduler.instance) // true -> 주기를 엄격하게 지킴
    .subscribe { print(currentTimeString(), $0) }
    .disposed(by: disposeBag)
 
+/*
+ next(0)
+ next(2)
+ next(5)
+ next(7)
+ next(9)
+ completed
+ */
 
+// throttle의 주기가 지나도 원본 Observable이 새로운 Next이벤트를 방출할 떄까지 기다림 -> 마지막 이벤트 전달
 Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
    .debug()
    .take(10)
-   .throttle(.milliseconds(2500), latest: false, scheduler: MainScheduler.instance)
+   .throttle(.milliseconds(2500), latest: false, scheduler: MainScheduler.instance) // false -> 지정된 주기를 초과할 수 있음
    .subscribe { print(currentTimeString(), $0) }
    .disposed(by: disposeBag)
+
+/*
+ next(0)
+ next(3)
+ next(6)
+ next(9)
+ completed
+ */

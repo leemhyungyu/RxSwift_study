@@ -27,11 +27,31 @@ import RxSwift
 /*:
  # skip(while:)
  */
+// skip(while:): 클로저에서 true를 리턴하면 앞에서 방춣하는 Next이벤트 무시, false를 리턴하면 그때부터 이후에 클로저에서 발생하는 리턴값은 무시하고 모든 Next이벤트 방출
 
 let disposeBag = DisposeBag()
 let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 
+Observable.from(numbers)
+    .skip { !$0.isMultiple(of: 2) }
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
+
+/*
+ - 출력 -
+ next(2)
+ next(2)
+ next(3)
+ next(4)
+ next(5)
+ next(6)
+ next(7)
+ next(8)
+ next(9)
+ next(10)
+ completed
+ */
 
 
 

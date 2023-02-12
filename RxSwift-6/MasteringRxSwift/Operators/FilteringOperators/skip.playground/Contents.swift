@@ -27,9 +27,25 @@ import RxSwift
 /*:
  # skip
  */
+// skip: 특정 요소를 무시
 
 let disposeBag = DisposeBag()
 let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
+Observable.from(numbers)
+    .skip(3) // 해당 정수만큼 방출되는 요소를 무시하고 이후에 방출되는 요소가 포함된 새로운 Observable 리턴, 인덱스와 혼동 주의해야 함
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
-
+/*
+ 
+ - 출력  -
+ next(4)
+ next(5)
+ next(6)
+ next(7)
+ next(8)
+ next(9)
+ next(10)
+ completed
+ */

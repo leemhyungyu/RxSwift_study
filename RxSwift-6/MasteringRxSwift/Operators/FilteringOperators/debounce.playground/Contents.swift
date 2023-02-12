@@ -27,7 +27,9 @@ import RxSwift
 /*:
  # debounce
  */
-
+// debounce:
+// dueTime: 연산자가 Next이벤트를 방출할지 결정하는 조건으로 사용되는 시간
+//
 
 let disposeBag = DisposeBag()
 
@@ -38,7 +40,7 @@ let buttonTap = Observable<String>.create { observer in
          Thread.sleep(forTimeInterval: 0.3)
       }
       
-      Thread.sleep(forTimeInterval: 1)
+      Thread.sleep(forTimeInterval: 1) // 1초동안 쓰레드 중지
       
       for i in 11...20 {
          observer.onNext("Tap \(i)")
@@ -53,7 +55,14 @@ let buttonTap = Observable<String>.create { observer in
    }
 }
 
+// 지정된 시간동안 새로운 이벤트가 방출되지 않으면 가장 마지막에 방출된 이벤트를 구독자에게 전달
 buttonTap
-   .subscribe { print($0) }
-   .disposed(by: disposeBag)
+    .debounce(.milliseconds(1000), scheduler: MainScheduler.instance)
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
+/*
+ next(Tap 10)
+ next(Tap 20)
+ completed
+ */

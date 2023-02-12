@@ -27,9 +27,14 @@ import RxSwift
 /*:
  # ignoreElements
  */
+// ignoreElements: 방출되는 이벤트(onNext)를 필터링(next이벤트 무시), 주로 작업에 성공과 실패에만 관심이 있을 때 사용
 
 let disposeBag = DisposeBag()
 let fruits = ["🍏", "🍎", "🍋", "🍓", "🍇"]
 
+Observable.from(fruits)
+    .ignoreElements()
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
-
+// 결과 -> completed 이벤트만 전달됨.

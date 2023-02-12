@@ -28,10 +28,49 @@ import RxSwift
  # single
  */
 
+// single: 원본 Observable에서 첫번쨰 요소만 방출하거나 조건과 일치하는 첫번째 요소만 방출, 하나의 요소만 방출을 허용, 두 개 이상의 요소가 방출되면 에러가 발생
+
 let disposeBag = DisposeBag()
 let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
+Observable.just(1)
+    .single()
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
+/*
+ - 출력 -
+ next(1)
+ completed
+ */
 
+// 원본 Observable이 두 개 이상의 요소가 방출되면 에러 발생
+Observable.from(numbers)
+    .single()
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
+/*
+ - 출력 -
+ next(1)
+ error(Sequence contains more than one element.)
+ */
 
+Observable.from(numbers)
+    .single { $0 == 3 }
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
+/*
+ - 출력 -
+ next(3)
+ completed
 
+ */
+
+// :- single연산자는 하나의 요소가 방출되는 것을 보장함
+let subject = PublishSubject<Int>()
+
+subject.single()
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
+
+subject.onNext(100)

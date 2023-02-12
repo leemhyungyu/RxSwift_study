@@ -28,7 +28,24 @@ import RxSwift
 /*:
  # skip(until:)
  */
+// skip(until:): 다른 Observable을 파라미터로 받고 해당 Observable가 이벤트를 방출하면 그 이후에 새롭게 방출되는 이벤트만 구독자로 전달
 
 let disposeBag = DisposeBag()
 
+let subject = PublishSubject<Int>()
+let trigger = PublishSubject<Int>()
+
+subject.skip(until: trigger)
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
+
+subject.onNext(1)
+trigger.onNext(0)
+subject.onNext(2)
+
+/*
+ - 출력 -
+ next(2)
+
+ */
 

@@ -31,7 +31,26 @@ import RxSwift
 let disposeBag = DisposeBag()
 let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
+Observable.from(numbers)
+    .take(while: { !$0.isMultiple(of: 2) }) // false를 리턴하면 전달하지 않고 completed이벤트 전달한다음 끝냄
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
+/*
+ - 출력 -
+ next(1)
+ completed
+ */
 
+Observable.from(numbers)
+    .take(while: { !$0.isMultiple(of: 2) }, behavior: .inclusive) // .inclusive -> 마지막에 확인한 값을 completed와 함께 방출
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
+/*
+- 출력 -
+ next(1)
+ next(2)
+ completed
+ */
 

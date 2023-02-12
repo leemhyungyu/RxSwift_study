@@ -31,9 +31,50 @@ import RxSwift
 let disposeBag = DisposeBag()
 
 
+let subject = PublishSubject<Int>()
+let trigger = PublishSubject<Int>()
+
+// 파라미터로 전달한 Observable에서 onNext이벤트가 방출하기 전까지 원본 Observable이 방출하는 이벤트를 그대로 전달
+
+subject.take(until: trigger)
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
+
+subject.onNext(1)
+subject.onNext(2)
+
+trigger.onNext(0)
+
+subject.onNext(3)
+
+/*
+ - 출력 -
+ next(1)
+ next(2)
+ completed
+
+ */
+
+// 클로저에서 false를 리턴하는 동안 이벤트 방출, true를 리턴하면 이벤트 방출을 중단하고 Observable 종료
+
+subject.take(until: { $0 > 5 })
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
+
+subject.onNext(1)
+subject.onNext(2)
+subject.onNext(3)
+subject.onNext(6)
 
 
+/*
+ - 출력 -
+ next(1)
+ next(2)
+ next(3)
+ completed
 
+ */
 
 
 

@@ -27,9 +27,15 @@ import RxSwift
 /*:
  # filter
  */
+// filter: Observable이 방출하는 요소 필터링
 
 let disposeBag = DisposeBag()
 let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+Observable.from(numbers)
+    .filter { $0.isMultiple(of: 2) } // 해당 클로저가 true가 되는경우의 요소만 리턴
+    .subscribe { print($0) }
+    .disposed(by: disposeBag)
 
 
 
