@@ -27,18 +27,70 @@ import RxSwift
 /*:
  # concat
  */
+// concat: 두 개의 Observable을 연결할 때 사용
 
 let bag = DisposeBag()
 let fruits = Observable.from(["🍏", "🍎", "🥝", "🍑", "🍋", "🍉"])
 let animals = Observable.from(["🐶", "🐱", "🐹", "🐼", "🐯", "🐵"])
 
+Observable.concat([fruits, animals])
+    .subscribe { print($0) }
+    .disposed(by: bag)
 
+/*
+ next(🍏)
+ next(🍎)
+ next(🥝)
+ next(🍑)
+ next(🍋)
+ next(🍉)
+ next(🐶)
+ next(🐱)
+ next(🐹)
+ next(🐼)
+ next(🐯)
+ next(🐵)
+ completed
+ */
 
+// 대상 Observable이 Completed이벤트를 전달한 다음에 파라미터로 전달한 Observable을 연결함, 만약 Error이벤트가 전달된다면 Observable은 연결되지 않고 바로 종료
 
+fruits.concat(animals)
+    .subscribe { print($0) }
+    .disposed(by: bag)
 
+/*
+ next(🍏)
+ next(🍎)
+ next(🥝)
+ next(🍑)
+ next(🍋)
+ next(🍉)
+ next(🐶)
+ next(🐱)
+ next(🐹)
+ next(🐼)
+ next(🐯)
+ next(🐵)
+ completed
+ next(🍏)
+ next(🍎)
+ next(🥝)
+ next(🍑)
+ next(🍋)
+ next(🍉)
+ next(🐶)
+ next(🐱)
+ next(🐹)
+ next(🐼)
+ next(🐯)
+ next(🐵)
+ completed
+ */
 
-
-
+animals.concat(fruits)
+    .subscribe { print($0) }
+    .disposed(by: bag)
 
 
 

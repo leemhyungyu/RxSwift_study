@@ -27,11 +27,31 @@ import RxSwift
 /*:
  # startWith
  */
+// startWith: Observable이 요소를 방출하기 전에 다른 항목들을 앞부분에 추가, 주로 기본값이나 시작값을 지정할 때 활용
 
 let bag = DisposeBag()
 let numbers = [1, 2, 3, 4, 5]
 
 
+// 마지막 연산자로 전달한 값부터 순서대로 추가됨
+Observable.from(numbers)
+    .startWith(0)
+    .startWith(-1, -2)
+    .startWith(-3)
+    .subscribe { print($0) }
+    .disposed(by: bag)
 
+/*
+ next(-3)
+ next(-1)
+ next(-2)
+ next(0)
+ next(1)
+ next(2)
+ next(3)
+ next(4)
+ next(5)
+ completed
+ */
 
 

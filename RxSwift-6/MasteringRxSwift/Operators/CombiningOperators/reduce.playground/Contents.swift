@@ -27,6 +27,7 @@ import RxSwift
 /*:
  # reduce
  */
+// reduce: 
 
 let bag = DisposeBag()
 
@@ -38,13 +39,30 @@ let o = Observable.range(start: 1, count: 5)
 
 print("== scan")
 
+// 주로 작업의 결과를 누적시키면서 중간 결과와 최종 결과가 필요할 떄 사용
 o.scan(0, accumulator: +)
    .subscribe { print($0) }
    .disposed(by: bag)
 
 print("== reduce")
 
+// reduce 연산자는 최종 결과 하나만 방출
+o.reduce(0, accumulator: +)
+    .subscribe { print($0) }
+    .disposed(by: bag)
 
+/*
+ == scan
+ next(1) = 0 + 1
+ next(3) = 1 + 2
+ next(6) = 3 + 3
+ next(10) = 6 + 4
+ next(15) = 10 + 5
+ completed
+ == reduce
+ next(15)
+ completed
+ */
 
 
 

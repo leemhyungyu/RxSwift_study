@@ -27,6 +27,10 @@ import RxSwift
 /*:
  # zip
  */
+// zip: Soruce Observable이 방출하는 요소를 결합, 결합하는 점에서는 combineLatest와 동일하지만 클로저에게 중복된 요소를 전달하지 않고 반드시 인덱스를 기준으로 짝을 일치시켜서 전달
+// --> 첫번째 요소는 첫번째 요소와 결합, 두번째 요소는 두번째 요소와 결합
+// --> 결합할 짝이 없는 요소들은 구독자에게 전달되지 않음
+// --> 해당 방식을 indexed Sequencing이라 함
 
 let bag = DisposeBag()
 
@@ -37,9 +41,32 @@ enum MyError: Error {
 let numbers = PublishSubject<Int>()
 let strings = PublishSubject<String>()
 
+Observable.zip(numbers, strings) { "\($0) - \($1)" }
+    .subscribe { print($0) }
+    .disposed(by: bag)
 
+// 항상 방출된 순서대로 짝을 맞춤
 
+numbers.onNext(1)
+strings.onNext("one")
 
+numbers.onNext(2)
+strings.onNext("two")
+
+numbers.onCompleted()
+
+//numbers.onNext(MyError.error) // 하나라도 error이벤트를 전달하면 즉시 구독자에게 error이벤트가 전달되고 종료
+
+strings.onNext("three") // 해당 이벤트가 구독자에게 전달되지 않음
+
+strings.onCompleted() // 모든 Source Observable이 completed이벤트를 전달하면 최종적으로 구독자에게 completed이벤트가 전달됨
+
+/*
+ next(1 - one)
+ next(2 - two)
+ completed
+
+ */
 
 
 

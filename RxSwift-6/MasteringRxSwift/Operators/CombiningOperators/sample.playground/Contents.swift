@@ -27,6 +27,9 @@ import RxSwift
 /*:
  # sample
  */
+// sample: triggerObservable에서 Next 이벤트를 전달할때마다 dataObservable의 최신 Next이벤트를 방출
+// --> 동일한 Next이벤트는 반복해서 방출하지 않음
+// 형삭: dataObservable.sample(triggerObservable)
 
 let bag = DisposeBag()
 
@@ -37,9 +40,24 @@ enum MyError: Error {
 let trigger = PublishSubject<Void>()
 let data = PublishSubject<String>()
 
+data.sample(trigger)
+    .subscribe { print($0) }
+    .disposed(by: bag)
 
+trigger.onNext(())
+data.onNext("Hello")
+trigger.onNext(())
+trigger.onNext(())
+data.onNext("Hi")
+trigger.onNext(())
+data.onNext("Yes")
+data.onCompleted()
+trigger.onNext(())
 
-
-
-
+/*
+ next(Hello)
+ next(Hi)
+ next(Yes)
+ completed
+ */
 
