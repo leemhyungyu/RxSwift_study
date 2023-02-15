@@ -28,6 +28,8 @@ import RxSwift
  # amb
  */
 
+// amb: 여러 Observable 중에서 가장 먼저 이벤트를 방출하는 Observable을 구독하고 나머지는 무시
+// --> 여러 서버로 요청을 전달하고 가장 빠른 응답을 처리하는 패턴을 구현할 수 있음
 
 let bag = DisposeBag()
 
@@ -39,9 +41,26 @@ let a = PublishSubject<String>()
 let b = PublishSubject<String>()
 let c = PublishSubject<String>()
 
+a.amb(b)
+    .subscribe { print($0) }
+    .disposed(by: bag)
 
+// amb는 a구독하고 b는 무시
+a.onNext("A")
+b.onNext("B")
 
+b.onCompleted() // 무시됨
+a.onCompleted() // 전달됨
 
+/*
+ next(A)
+ completed
+ */
+
+// 3개 이상 Observable이 있을 때 사용법
+Observable.amb([a, b, c])
+    .subscribe { print($0) }
+    .disposed(by: bag)
 
 
 
