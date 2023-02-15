@@ -28,10 +28,24 @@ import RxSwift
  # interval
  */
 
+// interval: 특정 주기마다 정수를 방출하는 Observable 생성
 
+let i = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
 
+let subscription1 = i.subscribe { print("1 >> \($0)")}
 
+DispatchQueue.main.asyncAfter(wallDeadline: .now() + 5) {
+    subscription1.dispose()
+}
 
+var subscription2: Disposable?
 
+DispatchQueue.main.asyncAfter(wallDeadline: .now() + 2) {
+    subscription2 = i.subscribe { print("2 >> \($0)")}
+}
 
+DispatchQueue.main.asyncAfter(wallDeadline: .now() + 7) {
+    subscription2?.dispose()
+}
 
+// intervale의 핵심은 새로운 구독이 추가되는 시점에 내부에 있는 타이머가 시작됨

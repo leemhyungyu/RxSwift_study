@@ -37,6 +37,14 @@ func currentTimeString() -> String {
 }
 
 
+// 7초동안 아무런 로그도 뜨지 않다가 7초가 지나면 원본 Observable이 Next이벤트 방출하고 바로 구독자에게 전달
+Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+    .take(10)
+    .debug()
+    .delaySubscription(.seconds(7), scheduler: MainScheduler.instance)
+    .subscribe { print(currentTimeString(), $0)}
+    .disposed(by: bag)
+
 
 
 
