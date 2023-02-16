@@ -29,8 +29,9 @@ import RxSwift
  # replay, replayAll
  */
 
+// RelaySubject를 이용해 두 번째 구독자가 이전의 발생한 이벤트를 함께 전달받음
 let bag = DisposeBag()
-let subject = PublishSubject<Int>()
+let subject = ReplaySubject<Int>.create(bufferSize: 5)
 let source = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance).take(5).multicast(subject)
 
 source
@@ -44,6 +45,50 @@ source
 
 source.connect()
 
+/*
+  🔵 next(0)
+  🔵 next(1)
+  🔴 next(0)
+  🔴 next(1)
+  🔵 next(2)
+  🔴 next(2)
+  🔵 next(3)
+  🔴 next(3)
+  🔵 next(4)
+  🔴 next(4)
+  🔵 completed
+  🔴 completed
+ */
+
+// replay 연산자를 사용할 때는 항상 버퍼 크기를 신중하게 지정해야 함(메모리 문제)
+// 버퍼 크기에 제한이 없는 replayAll연산자는 가능하면 사용 X
+let s = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance).take(5).replay(5)
+
+s
+    .subscribe { print("🔵", $0) }
+    .disposed(by: bag)
+
+s
+    .delaySubscription(.seconds(3), scheduler: MainScheduler.instance)
+    .subscribe { print("🔴", $0) }
+    .disposed(by: bag)
+
+source.connect()
+
+/*
+ 🔵 next(0)
+ 🔵 next(1)
+ 🔴 next(0)
+ 🔴 next(1)
+ 🔵 next(2)
+ 🔴 next(2)
+ 🔵 next(3)
+ 🔴 next(3)
+ 🔵 next(4)
+ 🔴 next(4)
+ 🔵 completed
+ 🔴 completed
+ */
 
 
 

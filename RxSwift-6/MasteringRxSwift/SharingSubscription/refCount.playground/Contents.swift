@@ -29,12 +29,12 @@ import RxSwift
  */
 
 let bag = DisposeBag()
-let source = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance).debug().publish()
+let source = Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance).debug().publish().refCount()
 
 let observer1 = source
     .subscribe { print("🔵", $0) }
 
-source.connect()
+// source.connect() -> refCount에서 리턴되는 Observable은 내부에서 connet메소드 호출되므로 필요 없음
 
 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
     observer1.dispose()

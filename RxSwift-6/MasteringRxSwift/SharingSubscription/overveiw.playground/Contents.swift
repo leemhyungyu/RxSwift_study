@@ -27,9 +27,12 @@ import RxSwift
 /*:
  # Sharing Subscriptions
  */
+// Sharing Subscriptions: 구독 공유를 통해서 불필요한 중복 작업을 피하는 방법
+
 
 let bag = DisposeBag()
 
+// 서버에 접속한다음 전달된 문자열을 방출하는 Observable
 let source = Observable<String>.create { observer in
     let url = URL(string: "https://kxcoding-study.azurewebsites.net/api/string")!
     let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
@@ -46,6 +49,10 @@ let source = Observable<String>.create { observer in
     }
 }
 .debug()
+.share() // 모든 구독자가 하나의 구독을 공유하도록 함 -> Observable에서 구현한 코드는 한 번 실행
+
+// Observable에 3개의 구독자가 추가되었고 네트워크 요청도 3번 실행됨 -> 클라이언트와 서버에서 불필요한 리소스를 낭비하게 됨
+// --> 문제 해결: 모든 구독자가 하나의 구독을 공유하도록 구현해야함
 
 
 source.subscribe().disposed(by: bag)
