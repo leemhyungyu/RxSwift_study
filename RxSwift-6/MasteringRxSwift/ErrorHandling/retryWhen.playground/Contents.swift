@@ -28,6 +28,7 @@ import RxSwift
  # retry(when:)
  */
 
+// 사용자가 재시도 버튼을 눌렀을 때만 재시도 할 때와 같은 상황에서  사용
 
 let bag = DisposeBag()
 
@@ -58,9 +59,21 @@ let source = Observable<Int>.create { observer in
 let trigger = PublishSubject<Void>()
 
 source
+    .retry { _ in trigger }
     .subscribe { print($0) }
     .disposed(by: bag)
 
+trigger.onNext(()) // trigger Observable이 next이벤트를 방출하면 재시도
+trigger.onNext(())
 
-
-
+/*
+ START #1
+ END #1
+ START #2
+ END #2
+ START #3
+ next(1)
+ next(2)
+ completed
+ END #3
+ */

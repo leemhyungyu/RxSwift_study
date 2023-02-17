@@ -27,6 +27,10 @@ import RxSwift
 /*:
  # retry
  */
+// retry는 error가 발생하면 Observable에 대한 구독을 해지하고 새로운 구독 시작
+// --> 새로 구독하므로 OBservable의 모든 작업은 처음부터 다시 시작
+// --> observable에서 에러가 발생하지 않으면 정상적으로 종료
+// --> 에러가 발생하면 또 다시 새로운 구독 시작
 
 let bag = DisposeBag()
 
@@ -55,10 +59,22 @@ let source = Observable<Int>.create { observer in
 }
 
 source
+//    .retry() // Observable이 정상적으로 완료할 때까지 계속해서 재시도 -> 리소스 낭비 문제
+    .retry(7) // 마지막 재시도에서도 error이벤트가 전달되면 error이벤트를 전달하고 끝냄, 7번 재시도하고 싶으면 8을 파라미터로 전달해야 함
     .subscribe { print($0) }
     .disposed(by: bag)
 
-
+/*
+ #1 START
+ #1 END
+ #2 START
+ #2 END
+ #3 START
+ next(1)
+ next(2)
+ completed
+ #3 END
+ */
 
 
 

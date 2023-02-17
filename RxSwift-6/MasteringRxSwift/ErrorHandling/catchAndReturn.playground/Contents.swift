@@ -37,7 +37,13 @@ enum MyError: Error {
 let subject = PublishSubject<Int>()
 
 subject
+    .catchAndReturn(-1) // soruceObservable에서 에러가 발생하면 파라미터로 전달한 기본값을 next이벤트로 방출하고 completed이벤트 방출
     .subscribe { print($0) }
     .disposed(by: bag)
 
 subject.onError(MyError.error)
+
+/*
+ next(10)
+ completed
+ */
