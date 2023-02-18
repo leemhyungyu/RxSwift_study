@@ -31,12 +31,26 @@ class RxCocoaCollectionViewViewController: UIViewController {
     
     @IBOutlet weak var listCollectionView: UICollectionView!
     
-    
+    let colorObservable = Observable.of(MaterialBlue.allColors)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        colorObservable.bind(to: listCollectionView.rx.items(cellIdentifier: "colorCell", cellType: ColorCollectionViewCell.self)) { index, color, cell in
+            cell.backgroundColor = color
+            cell.hexLabel.text = color.rgbHexString
+        }
+        .disposed(by: bag)
         
+        listCollectionView.rx.modelSelected(UIColor.self)
+            .subscribe(onNext: {
+                print($0.rgbHexString)
+            })
+            .disposed(by: bag)
+        
+//        listCollectionView.delegate = self
+        listCollectionView.rx.setDelegate(self)
+            .disposed(by: bag)
     }
 }
 
