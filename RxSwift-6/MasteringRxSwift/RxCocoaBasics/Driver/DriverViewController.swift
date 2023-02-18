@@ -24,6 +24,15 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+/*
+ RxCocoa가 제공하는 Traits중에서 가장 핵심적인 것은 Driver임
+ Driver는 데이터를 UI에 바인딩하는 직관적이고 효율적인 방법 제공
+ --> Driver는 특별한 Observable이고 Error 이벤트 전달 X
+ --> 스케줄러를 강제를 변경하는 경우를 제외하고 항상 메인 스케줄러에서 작업
+ --> 일반 Observable에서 Share(replay: 1, scope: .whileConnected)한 것과 동일
+ --> 모든 구독자가 시퀀스를 공유하고 새로운 구독을 시작하면 가장 최근에 전달된 이벤트가 즉시 전달
+ */
+
 enum ValidationError: Error {
     case notANumber
 }
@@ -41,21 +50,28 @@ class DriverViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let result = inputField.rx.text
-            .flatMapLatest { validateText($0) }
+        let result = inputField.rx.text.asDriver()
+            .flatMapLatest {
+                validateText($0)
+                    .asDriver(onErrorJustReturn: false)
+            }
+        
         
         result
             .map { $0 ? "Ok" : "Error" }
-            .bind(to: resultLabel.rx.text)
+            .drive(resultLabel.rx.text)
+//            .bind(to: resultLabel.rx.text)
             .disposed(by: bag)
         
         result
             .map { $0 ? UIColor.blue : UIColor.red }
-            .bind(to: resultLabel.rx.backgroundColor)
+            .drive(resultLabel.rx.backgroundColor)
+//            .bind(to: resultLabel.rx.backgroundColor)
             .disposed(by: bag)
         
         result
-            .bind(to: sendButton.rx.isEnabled)
+            .drive(sendButton.rx.isEnabled)
+//            .bind(to: sendButton.rx.isEnabled)
             .disposed(by: bag)
         
     }

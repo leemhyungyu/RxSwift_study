@@ -37,6 +37,12 @@ class HelloRxCocoaViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        tapButton.rx.tap
+            .map { "Hello, RxCocoa "} // tap이벤트를 해당 문자열로 바꿈
+//            .subscribe(onNext: { [weak self] str in
+//                self?.valueLabel.text = str
+//            })
+            .bind(to: valueLabel.rx.text) // 방출된 문자열을 label의 text 속성과 바인드함 -> rx속성으로 접근
+            .disposed(by: bag)
     }
 }
